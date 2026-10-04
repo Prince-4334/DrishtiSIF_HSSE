@@ -1,3 +1,4 @@
+import shieldLogo from '../pages/shield-logo.png';
 import { Shield, LayoutGrid, FileSearch, ClipboardList, TrendingUp, Lock, Info, type LucideIcon } from 'lucide-react';
 
 export type PageId = 'overview' | 'analyze' | 'reports' | 'patterns' | 'rules' | 'about';
@@ -27,19 +28,18 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
         style={{ borderColor: 'var(--color-border)' }}
       >
         <div className="flex items-center gap-2.5">
-          <div
-            className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-            style={{ backgroundColor: 'var(--color-primary)' }}
-          >
-            <Shield size={20} className="text-white" strokeWidth={2} />
-          </div>
-          <div>
-            <div
-              className="font-semibold text-[15px] leading-tight tracking-wide"
-              style={{ color: 'var(--color-text)' }}
-            >
-              Drishti SIF
-            </div>
+         <img 
+        src={shieldLogo} 
+        alt="Drishti SIF" 
+        className="w-9 h-9 object-contain shrink-0" 
+      />
+      <div>
+        <div
+          className="font-semibold text-[15px] leading-tight tracking-wide"
+          style={{ color: 'var(--color-text)' }}
+        >
+          Drishti <span style={{ color: '#dc2626' }}>SIF</span>
+        </div>
             <div className="text-[11px] leading-tight mt-0.5" style={{ color: 'var(--color-text-light)' }}>
               HSE Intelligence Platform
             </div>

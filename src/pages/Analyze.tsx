@@ -51,7 +51,7 @@ export default function Analyze({ reports, onSaved, onNavigate }: AnalyzeProps) 
     return max;
   }, [reports]);
 
-  const handleAnalyze = () => {
+const handleAnalyze = async () => {
     if (text.trim().length < 15) {
       setTooShort(true);
       return;
@@ -59,19 +59,44 @@ export default function Analyze({ reports, onSaved, onNavigate }: AnalyzeProps) 
     setTooShort(false);
     setState('analyzing');
 
-    setTimeout(() => {
-      const analysis = analyzeReport(text);
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+      });
+      const data = await response.json();
+
+      const fallback = analyzeReport(text);
+
+      const analysis: AnalysisResult = {
+        ...fallback,
+        sifLevel: data.sif_potential,
+        priorityScore: data.sif_score,
+        lifeSavingRule: data.life_saving_rule,
+        activity: data.activity,
+        hazard: data.hazard,
+        barrierFailure: data.barrier_failure,
+        potentialConsequence: data.potential_consequence,
+        explanation: data.why_flagged,
+        evidence: data.extracted_precursors || fallback.evidence,
+      };
+
       setResult(analysis);
       setHseReview({
         reviewerName: 'Rajesh Saikia (Sr. HSE Manager)',
         comments: '',
         levelOverride: '',
-        confirmedAction: analysis.recommendedAction,
+        confirmedAction: analysis.recommendedAction || '',
       });
       setState('result');
-    }, 600);
+    } catch (error) {
+      console.error(error);
+      const fallback = analyzeReport(text);
+      setResult(fallback);
+      setState('result');
+    }
   };
-
   const handleClear = () => {
     setText('');
     setResult(null);
